@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>huittka — Synthetic Visions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f0e8; --paper2:#ece6da; --ink:#1b1813; --muted:#8b8273;
+    --line:rgba(27,24,19,.14); --accent:#b14a2c; --radius:3px;
+    --serif:"Cormorant Garamond",Georgia,"Songti SC","SimSun",serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+    font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(120% 80% at 50% -10%,rgba(177,74,44,.06),transparent 60%)}
+  .wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 32px}
+
+  /* 区块小标题 */
+  .label{font-family:var(--sans);font-size:12px;font-weight:400;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:16px}
+  .label::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* HERO */
+  header.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;
+    padding:120px 0 60px;position:relative}
+  .hero .kicker{font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:var(--muted);margin-bottom:34px}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(64px,15vw,200px);
+    line-height:.92;letter-spacing:-.01em;position:relative}
+  .hero h1 em{font-style:italic;color:var(--accent)}
+  .hero .lede{max-width:560px;margin-top:42px;font-size:clamp(16px,1.6vw,19px);
+    font-weight:300;color:#3a352c;line-height:1.75}
+  .hero .lede .cn{display:block;margin-top:14px;color:var(--muted);font-size:15px}
+  .hero .meta{margin-top:54px;display:flex;gap:46px;flex-wrap:wrap;font-size:12px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  .hero .meta b{display:block;font-family:var(--serif);font-size:26px;font-weight:500;
+    letter-spacing:0;color:var(--ink);text-transform:none;margin-top:6px}
+  .scrollcue{position:absolute;bottom:34px;left:32px;font-size:11px;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl}
+  .hero .xhs{display:inline-flex;align-items:center;gap:8px;margin-top:40px;color:var(--accent);
+    text-decoration:none;font-size:13px;letter-spacing:.14em;border:1px solid var(--accent);
+    padding:11px 22px;border-radius:2px;transition:.25s}
+  .hero .xhs:hover{background:var(--accent);color:var(--paper)}
+
+  /* STATEMENT */
+  .statement{padding:90px 0;border-top:1px solid var(--line)}
+  .statement p{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3.4vw,40px);
+    line-height:1.4;max-width:900px;font-weight:400}
+  .statement p span{color:var(--accent)}
+
+  /* SELECTED REEL */
+  .reel-sec{padding:30px 0 60px}
+  .reel{position:relative;width:100%;aspect-ratio:16/9;max-height:78vh;background:var(--ink);
+    overflow:hidden;cursor:pointer;border:1px solid var(--line)}
+  .reel .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    filter:blur(34px) brightness(.5);transform:scale(1.25);display:block;z-index:0}
+  .reel .fg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    object-position:50% 50%;display:block;z-index:1;transition:object-position .6s ease}
+  .reel .fg.is-video{inset:0;margin:auto;width:auto;height:100%;aspect-ratio:4/3;
+    object-fit:cover;object-position:50% 28%}
+  .reel::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.55))}
+  .reel .cap{position:absolute;left:0;bottom:0;padding:34px 38px;z-index:2;color:#f4f0e8;pointer-events:none;
+    text-shadow:0 2px 12px rgba(0,0,0,.7)}
+  .reel .cap .t{font-family:var(--serif);font-size:clamp(26px,3.4vw,42px);font-weight:500;line-height:1.1}
+  .reel .cap .d{font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.8;margin-top:8px}
+  .reel .idx{position:absolute;top:24px;right:30px;z-index:2;color:#f4f0e8;font-family:var(--serif);
+    font-size:18px;letter-spacing:.1em;opacity:.85}
+  .reel .arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:54px;height:54px;
+    border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.25);color:#fff;
+    font-size:26px;cursor:pointer;transition:.25s;display:flex;align-items:center;justify-content:center}
+  .reel .arrow:hover{background:rgba(255,255,255,.18)}
+  .reel .arrow.l{left:20px}.reel .arrow.r{right:20px}
+  .reel .dots{display:flex;gap:9px;justify-content:center;margin-top:22px}
+  .reel .dots b{width:8px;height:8px;border-radius:50%;background:var(--line);cursor:pointer;transition:.3s}
+  .reel .dots b.on{background:var(--accent);width:26px;border-radius:5px}
+
+  /* FILTER BAR */
+  .bar{position:sticky;top:0;z-index:30;background:rgba(244,240,232,.82);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0;margin-top:30px}
+  .bar-inner{max-width:1320px;margin:0 auto;padding:0 32px;display:flex;align-items:center;
+    gap:10px;flex-wrap:wrap;justify-content:center}
+  .filters{display:flex;gap:6px;flex-wrap:wrap}
+  .filters button{background:none;border:none;color:var(--muted);font-family:var(--sans);
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;padding:8px 14px;cursor:pointer;
+    border-bottom:1px solid transparent;transition:.25s}
+  .filters button:hover{color:var(--ink)}
+  .filters button.active{color:var(--ink);border-bottom-color:var(--accent);font-weight:400}
+  .count{color:var(--muted);font-size:12px;letter-spacing:.1em;margin-left:6px}
+  select#subSel{background:var(--paper);color:var(--ink);border:1px solid var(--line);
+    padding:8px 14px;border-radius:2px;font-family:var(--sans);font-size:12px;letter-spacing:.08em;
+    text-transform:uppercase;cursor:pointer;max-width:320px;display:none}
+  select#subSel.show{display:inline-block}
+
+  /* MASONRY */
+  .masonry{column-count:4;column-gap:14px;margin-top:34px}
+  @media(max-width:1100px){.masonry{column-count:3}}
+  @media(max-width:720px){.masonry{column-count:2;column-gap:10px}}
+  @media(max-width:420px){.masonry{column-count:1}}
+  .card{position:relative;break-inside:avoid;margin-bottom:14px;background:var(--paper2);
+    border:1px solid var(--line);cursor:pointer;overflow:hidden;opacity:0;transform:translateY(20px);
+    transition:opacity .7s ease,transform .6s ease,box-shadow .4s ease}
+  .card.show{opacity:1;transform:translateY(0)}
+  .card:hover{box-shadow:0 18px 44px rgba(27,24,19,.18)}
+  .card img,.card video{width:100%;display:block;filter:grayscale(.04);transition:transform .6s ease,filter .4s ease}
+  .card:hover img,.card:hover video{transform:scale(1.045)}
+  .card .cap{position:absolute;left:0;right:0;bottom:0;padding:26px 16px 13px;
+    background:linear-gradient(transparent,rgba(20,18,14,.82));opacity:0;transform:translateY(8px);transition:.35s}
+  .card:hover .cap{opacity:1;transform:translateY(0)}
+  .card .cap h3{font-family:var(--serif);font-size:19px;font-weight:500;color:#f4f0e8;line-height:1.15}
+  .card .cap span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,240,232,.7)}
+  .tag-video{position:absolute;top:10px;left:10px;background:rgba(20,18,14,.7);color:#f4f0e8;
+    padding:4px 10px;border-radius:2px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;z-index:2}
+
+  #sentinel{height:8px}
+  #empty{text-align:center;color:var(--muted);padding:60px 0;display:none;font-style:italic;font-family:var(--serif);font-size:22px}
+
+  /* LIGHTBOX */
+  .lightbox{position:fixed;inset:0;background:rgba(15,13,10,.96);z-index:100;display:none;
+    align-items:center;justify-content:center;padding:34px;backdrop-filter:blur(6px)}
+  .lightbox.open{display:flex;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .lightbox img,.lightbox video{max-width:88vw;max-height:82vh;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+  .lightbox .lb-info{position:absolute;bottom:24px;left:0;right:0;text-align:center;color:#f4f0e8}
+  .lightbox .lb-info h3{font-family:var(--serif);font-size:24px;font-weight:500}
+  .lightbox .lb-info span{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(244,240,232,.6)}
+  .lb-close{position:absolute;top:22px;right:28px;width:44px;height:44px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:22px;cursor:pointer;transition:.2s}
+  .lb-close:hover{background:rgba(255,255,255,.12)}
+  .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:24px;cursor:pointer;transition:.2s}
+  .lb-nav:hover{background:rgba(255,255,255,.12)}
+  .lb-prev{left:24px}.lb-next{right:24px}
+
+  footer{padding:90px 0 60px;border-top:1px solid var(--line);margin-top:60px;text-align:center}
+  footer .fname{font-family:var(--serif);font-size:40px;font-weight:500}
+  footer a{color:var(--accent);text-decoration:none;font-size:13px;letter-spacing:.12em}
+  footer a:hover{text-decoration:underline}
+  footer .fine{margin-top:22px;color:var(--muted);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header class="hero">
+      <div class="kicker">AI-Generated Visual Works · 2024—2026</div>
+      <h1>huit<em>t</em>ka</h1>
+      <p class="lede">A continuous experiment in synthetic imagery — where pop-culture archetypes meet machine dreaming, frame by frame.
+        <span class="cn">持续进行的合成影像实验——让流行文化的原型，与机器的梦境逐帧相遇。</span>
+      </p>
+      <div class="meta">
+        <div>Works<b id="mTotal">—</b></div>
+        <div>Series<b>Four</b></div>
+        <div>Medium<b>AI · Image / Motion</b></div>
+      </div>
+      <div class="scrollcue">Scroll ↓</div>
+      <a class="xhs" href="https://www.xiaohongshu.com/search_result?keyword=%E8%A1%8C%E6%91%84%E7%9A%84%E9%80%A0%E7%89%A9%E7%AC%94%E8%AE%B0-%E9%98%BF%E9%A5%AD" target="_blank" rel="noopener">小红书 · 行摄的造物笔记-阿饭 ↗</a>
+    </header>
+  </div>
+
+  <div class="wrap">
+    <section class="statement">
+      <p>I do not paint the model — I <span>negotiate</span> with it. Every figure here is a small treaty between an intention and an algorithm.</p>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section class="reel-sec">
+      <div class="label" style="margin-bottom:22px">Selected · 精选</div>
+      <div class="reel" id="reel">
+        <div class="idx" id="reelIdx"></div>
+        <button class="arrow l" id="reelPrev">&#8249;</button>
+        <button class="arrow r" id="reelNext">&#8250;</button>
+        <div class="cap"><div class="t" id="reelTitle"></div><div class="d" id="reelDesc"></div></div>
+      </div>
+      <div class="dots" id="reelDots"></div>
+    </section>
+  </div>
+
+  <div class="bar">
+    <div class="bar-inner">
+      <div class="filters" id="filters">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="minion">Minions</button>
+        <button data-filter="sanguo">Three Kingdoms</button>
+        <button data-filter="pokemon">Pokémon</button>
+        <button data-filter="video">Motion</button>
+      </div>
+      <select id="subSel"></select>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="masonry" id="gallery"></div>
+    <div id="empty">Nothing here yet — try another filter.</div>
+    <div id="sentinel"></div>
+  </div>
+
+  <footer>
+    <div class="fname">huittka</div>
+    <a href="https://www.xiaohongshu.com/search_result?keyword=%E8%A1%8C%E6%91%84%E7%9A%84%E9%80%A0%E7%89%A9%E7%AC%94%E8%AE%B0-%E9%98%BF%E9%A5%AD" target="_blank" rel="noopener">小红书 · 行摄的造物笔记-阿饭（2452163370）</a>
+    <div class="fine">© 2026 huittka — An infinite gallery of synthetic dreams</div>
+  </footer>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lb-close" id="lbClose">&times;</button>
+    <button class="lb-nav lb-prev" id="lbPrev">&#8249;</button>
+    <button class="lb-nav lb-next" id="lbNext">&#8250;</button>
+    <div id="lbMedia"></div>
+    <div class="lb-info"><h3 id="lbTitle"></h3><span id="lbDesc"></span></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+  (function(){
+    const gallery=document.getElementById('gallery');
+    const sentinel=document.getElementById('sentinel');
+    const emptyEl=document.getElementById('empty');
+    const countEl=document.getElementById('count');
+    const subSel=document.getElementById('subSel');
+    const mTotal=document.getElementById('mTotal');
+    if(mTotal) mTotal.textContent=(works?works.length:'0').toLocaleString();
+
+    const SUBMAP={minion:minionChars||[],sanguo:sanguoSubs||[],pokemon:pokemonSubs||[]};
+    const SUB_LABEL={minion:'Character',sanguo:'Character',pokemon:'Project'};
+
+    const state={filter:'all',sub:'__all__',list:[],ptr:0,batch:60,currentList:[]};
+
+    function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+    function fillSub(){
+      const opts=SUBMAP[state.filter]||[];
+      if(!opts.length){subSel.classList.remove('show');subSel.innerHTML='';return;}
+      let html='<option value="__all__">All '+SUB_LABEL[state.filter]+'s</option>';
+      opts.forEach(o=>{html+=`<option value="${esc(o.name)}">${esc(o.name)} (${o.count})</option>`;});
+      subSel.innerHTML=html;subSel.value='__all__';subSel.classList.add('show');
+    }
+
+    function getList(){
+      let l=works;
+      if(state.filter!=='all') l=l.filter(w=>w.category===state.filter);
+      if(state.sub!=='__all__') l=l.filter(w=>w.sub===state.sub);
+      return l;
+    }
+
+    const showObserver=new IntersectionObserver(es=>{
+      es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');showObserver.unobserve(e.target);}});
+    },{rootMargin:'80px'});
+
+    function makeCard(w,index){
+      const card=document.createElement('div');card.className='card';
+      if(w.type==='video'){
+        const tag=document.createElement('span');tag.className='tag-video';tag.textContent='▶ Motion';card.appendChild(tag);
+        const v=document.createElement('video');v.src=w.src;v.muted=true;v.loop=true;v.playsInline=true;
+        v.preload='metadata';v.style.aspectRatio=String(w.ar||1.777);card.appendChild(v);
+        card.addEventListener('mouseenter',()=>v.play().catch(()=>{}));
+        card.addEventListener('mouseleave',()=>{v.pause();v.currentTime=0;});
+      }else{
+        const img=document.createElement('img');img.loading='lazy';img.src=w.src;img.alt=esc(w.title);
+        img.style.aspectRatio=String(w.ar||1);card.appendChild(img);
+      }
+      const cap=document.createElement('div');cap.className='cap';
+      cap.innerHTML=`<h3>${esc(w.title)}</h3><span>${esc(w.desc||'')}</span>`;
+      card.appendChild(cap);
+      card.addEventListener('click',()=>openLightbox(state.list,index));
+      return card;
+    }
+
+    function renderBatch(){
+      const frag=document.createDocumentFragment();
+      const end=Math.min(state.ptr+state.batch,state.list.length);
+      for(;state.ptr<end;state.ptr++){
+        const card=makeCard(state.list[state.ptr],state.ptr);
+        frag.appendChild(card);showObserver.observe(card);
+      }
+      gallery.appendChild(frag);
+    }
+
+    function reset(){
+      gallery.innerHTML='';emptyEl.style.display='none';
+      state.list=getList();state.ptr=0;
+      countEl.textContent=state.list.length.toLocaleString()+' works';
+      if(state.list.length===0){emptyEl.style.display='block';return;}
+      renderBatch();
+    }
+
+    document.querySelectorAll('#filters button').forEach(b=>{
+      b.addEventListener('click',()=>{
+        document.querySelector('#filters .active').classList.remove('active');
+        b.classList.add('active');state.filter=b.dataset.filter;state.sub='__all__';
+        fillSub();reset();
+      });
+    });
+    subSel.addEventListener('change',()=>{state.sub=subSel.value;reset();});
+
+    new IntersectionObserver(es=>{
+      if(es[0].isIntersecting&&state.ptr<state.list.length)renderBatch();
+    },{rootMargin:'400px'}).observe(sentinel);
+
+    // ---- SELECTED REEL ----
+    let fIdx=0,fTimer=null;
+    const reel=document.getElementById('reel'),reelTitle=document.getElementById('reelTitle'),
+      reelDesc=document.getElementById('reelDesc'),reelDots=document.getElementById('reelDots'),
+      reelIdx=document.getElementById('reelIdx');
+    function renderReel(){
+      if(!featured||!featured.length){document.querySelector('.reel-sec').style.display='none';return;}
+      reelDots.innerHTML=featured.map((_,i)=>`<b data-i="${i}"></b>`).join('');
+      reelDots.querySelectorAll('b').forEach(b=>b.addEventListener('click',()=>showR(+b.dataset.i)));
+      document.getElementById('reelPrev').onclick=()=>showR(fIdx-1);
+      document.getElementById('reelNext').onclick=()=>showR(fIdx+1);
+      reel.addEventListener('click',e=>{if(e.target.closest('.arrow'))return;openLightbox(featured,fIdx);});
+      reel.addEventListener('mouseenter',()=>clearInterval(fTimer));
+      reel.addEventListener('mouseleave',startR);
+      showR(0);
+    }
+    function showR(i){
+      fIdx=(i+featured.length)%featured.length;const it=featured[fIdx];
+      // 图片已裁成 16:9，满幅居中铺满；视频裁到 4:3 居中框（少裁），取中上露上半身和脸
+      const isVid=it.type==='video';
+      const fgPos=isVid ? '50% 28%' : '50% 50%';
+      const media=isVid
+        ?`<video class="bg" src="${esc(it.src)}" autoplay muted loop playsinline></video><video class="fg is-video" style="object-position:${fgPos}" src="${esc(it.src)}" autoplay muted loop playsinline></video>`
+        :`<img class="bg" src="${esc(it.src)}" alt=""><img class="fg" style="object-position:${fgPos}" src="${esc(it.src)}" alt="${esc(it.title)}">`;
+      let holder=document.getElementById('reelHolder');
+      if(!holder){holder=document.createElement('div');holder.id='reelHolder';
+        holder.style.position='absolute';holder.style.inset='0';reel.insertBefore(holder,reel.firstChild);}
+      holder.innerHTML=media;
+      reelTitle.textContent=it.title;reelDesc.textContent=it.desc||'';
+      reelIdx.textContent=String(fIdx+1).padStart(2,'0')+' / '+String(featured.length).padStart(2,'0');
+      reelDots.querySelectorAll('b').forEach((b,idx)=>b.classList.toggle('on',idx===fIdx));
+    }
+    function startR(){clearInterval(fTimer);fTimer=setInterval(()=>showR(fIdx+1),5500);}
+
+    // ---- LIGHTBOX ----
+    const lb=document.getElementById('lightbox'),lbMedia=document.getElementById('lbMedia'),
+      lbTitle=document.getElementById('lbTitle'),lbDesc=document.getElementById('lbDesc');
+    let cur=0;
+    function openLightbox(list,i){state.currentList=list;cur=i;const w=list[i];
+      if(w.type==='video'){
+        lbMedia.innerHTML=`<video src="${esc(w.src)}" controls autoplay loop playsinline></video>`;
+      }else{
+        lbMedia.innerHTML=`<img src="${esc(w.src)}" alt="${esc(w.title)}">`;
+      }
+      lbTitle.textContent=w.title;lbDesc.textContent=w.desc||'';
+      lb.classList.add('open');
+    }
+    function closeLightbox(){
+      lb.classList.remove('open');
+      lbMedia.innerHTML='';                            // 清空→视频立即停止播放与声音
+    }
+    function nav(d){const L=state.currentList;if(!L||!L.length)return;cur=(cur+d+L.length)%L.length;openLightbox(L,cur);}
+    document.getElementById('lbClose').onclick=closeLightbox;
+    document.getElementById('lbPrev').onclick=()=>nav(-1);
+    document.getElementById('lbNext').onclick=()=>nav(1);
+    lb.addEventListener('click',e=>{if(e.target===lb)closeLightbox();});
+    document.addEventListener('keydown',e=>{
+      if(!lb.classList.contains('open'))return;
+      if(e.key==='Escape')closeLightbox();
+      if(e.key==='ArrowLeft')nav(-1);
+      if(e.key==='ArrowRight')nav(1);
+    });
+
+    reset();renderReel();startR();
+  })();
+  </script>
+</body>
+</html>
