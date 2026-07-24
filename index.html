@@ -232,7 +232,7 @@
     <div class="lb-info"><h3 id="lbTitle"></h3><span id="lbDesc"></span></div>
   </div>
 
-  <script src="data.js?v=20260724c"></script>
+  <script src="data.js?v=20260724d"></script>
   <script>
   (function(){
     const gallery=document.getElementById('gallery');
@@ -283,15 +283,21 @@
       es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');showObserver.unobserve(e.target);}});
     },{rootMargin:'80px'});
 
+    // 视频: 仅当进入视口才播放, 离开即暂停 —— 避免一屏多个视频同时抢带宽
+    const videoObserver=new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        const v=e.target.querySelector('video'); if(!v) return;
+        if(e.isIntersecting){ v.play().catch(()=>{}); } else { try{v.pause();}catch(_){} }
+      });
+    },{threshold:0.2});
+
     function makeCard(w,index){
       const card=document.createElement('div');card.className='card';
       if(w.type==='video'){
         const tag=document.createElement('span');tag.className='tag-video';tag.textContent=(lang==='zh'?'▶ 影像':'▶ Motion');card.appendChild(tag);
-        const v=document.createElement('video');v.src=w.src;v.muted=true;v.loop=true;v.playsInline=true;v.autoplay=true;
-        v.preload='metadata';v.style.aspectRatio=String(w.ar||1.777);card.appendChild(v);
+        const v=document.createElement('video');v.src=w.src;v.muted=true;v.loop=true;v.playsInline=true;
+        v.preload='none';v.style.aspectRatio=String(w.ar||1.777);card.appendChild(v);
         card.classList.add('is-video-card');
-        card.addEventListener('mouseenter',()=>v.play().catch(()=>{}));
-        card.addEventListener('click',()=>v.play().catch(()=>{}));
       }else{
         const img=document.createElement('img');img.loading='lazy';img.src=w.src;img.alt=esc(w.title);
         img.style.aspectRatio=String(w.ar||1);card.appendChild(img);
@@ -309,11 +315,13 @@
       for(;state.ptr<end;state.ptr++){
         const card=makeCard(state.list[state.ptr],state.ptr);
         frag.appendChild(card);showObserver.observe(card);
+        if(card.classList.contains('is-video-card')) videoObserver.observe(card);
       }
       gallery.appendChild(frag);
     }
 
     function reset(){
+      videoObserver.disconnect();
       gallery.innerHTML='';emptyEl.style.display='none';
       state.list=getList();state.ptr=0;
       countEl.textContent=state.list.length.toLocaleString()+' '+(lang==='zh'?'件作品':'works');
