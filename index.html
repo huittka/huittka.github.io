@@ -128,6 +128,9 @@
   .card .cap span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,240,232,.7)}
   .tag-video{position:absolute;top:10px;left:10px;background:rgba(20,18,14,.7);color:#f4f0e8;
     padding:4px 10px;border-radius:2px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;z-index:2}
+  .card.is-video-card video{min-height:180px;background:#15130f}
+  .card.is-video-card .cap{opacity:1;transform:translateY(0);background:linear-gradient(transparent,rgba(20,18,14,.9))}
+  .card.is-video-card:hover video{transform:none}
 
   #sentinel{height:8px}
   #empty{text-align:center;color:var(--muted);padding:60px 0;display:none;font-style:italic;font-family:var(--serif);font-size:22px}
@@ -229,7 +232,7 @@
     <div class="lb-info"><h3 id="lbTitle"></h3><span id="lbDesc"></span></div>
   </div>
 
-  <script src="data.js?v=20260724b"></script>
+  <script src="data.js?v=20260724c"></script>
   <script>
   (function(){
     const gallery=document.getElementById('gallery');
@@ -284,10 +287,11 @@
       const card=document.createElement('div');card.className='card';
       if(w.type==='video'){
         const tag=document.createElement('span');tag.className='tag-video';tag.textContent=(lang==='zh'?'▶ 影像':'▶ Motion');card.appendChild(tag);
-        const v=document.createElement('video');v.src=w.src;v.muted=true;v.loop=true;v.playsInline=true;
+        const v=document.createElement('video');v.src=w.src;v.muted=true;v.loop=true;v.playsInline=true;v.autoplay=true;
         v.preload='metadata';v.style.aspectRatio=String(w.ar||1.777);card.appendChild(v);
+        card.classList.add('is-video-card');
         card.addEventListener('mouseenter',()=>v.play().catch(()=>{}));
-        card.addEventListener('mouseleave',()=>{v.pause();v.currentTime=0;});
+        card.addEventListener('click',()=>v.play().catch(()=>{}));
       }else{
         const img=document.createElement('img');img.loading='lazy';img.src=w.src;img.alt=esc(w.title);
         img.style.aspectRatio=String(w.ar||1);card.appendChild(img);
