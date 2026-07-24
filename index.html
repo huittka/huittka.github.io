@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,6 +20,17 @@
     font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
     background:radial-gradient(120% 80% at 50% -10%,rgba(177,74,44,.06),transparent 60%)}
+
+  /* 语言切换 */
+  .lang-toggle{position:fixed;top:16px;right:18px;z-index:60;background:rgba(244,240,232,.9);
+    border:1px solid var(--line);color:var(--ink);font-family:var(--sans);font-size:12px;
+    letter-spacing:.14em;padding:8px 14px;border-radius:2px;cursor:pointer;backdrop-filter:blur(8px);
+    transition:.25s}
+  .lang-toggle:hover{border-color:var(--accent);color:var(--accent)}
+  body.lang-en .lede .cn{display:none}
+  body.lang-zh .lede .en{display:none}
+  body.lang-en .stmt-cn{display:none}
+  body.lang-zh .stmt-en{display:none}
   .wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 32px}
 
   /* 区块小标题 */
@@ -145,34 +156,34 @@
   footer .fine{margin-top:22px;color:var(--muted);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
 </style>
 </head>
-<body>
+<body class="lang-en">
+  <button id="langToggle" class="lang-toggle" aria-label="切换语言">中文</button>
 
   <div class="wrap">
     <header class="hero">
-      <div class="kicker">AI-Generated Visual Works · 2024—2026</div>
+      <div class="kicker" data-i18n="kicker">AI-Generated Visual Works · 2024—2026</div>
       <h1>huit<em>t</em>ka</h1>
-      <p class="lede">A continuous experiment in synthetic imagery — where pop-culture archetypes meet machine dreaming, frame by frame.
-        <span class="cn">持续进行的合成影像实验——让流行文化的原型，与机器的梦境逐帧相遇。</span>
-      </p>
+      <p class="lede"><span class="en">A continuous experiment in synthetic imagery — where pop-culture archetypes meet machine dreaming, frame by frame.</span><span class="cn">持续进行的合成影像实验——让流行文化的原型，与机器的梦境逐帧相遇。</span></p>
       <div class="meta">
-        <div>Works<b id="mTotal">—</b></div>
-        <div>Series<b>Four</b></div>
-        <div>Medium<b>AI · Image / Motion</b></div>
+        <div><span data-i18n="m_works">Works</span><b id="mTotal">—</b></div>
+        <div><span data-i18n="m_series">Series</span><b data-i18n="m_series_v">Four</b></div>
+        <div><span data-i18n="m_medium">Medium</span><b data-i18n="m_medium_v">AI · Image / Motion</b></div>
       </div>
-      <div class="scrollcue">Scroll ↓</div>
+      <div class="scrollcue" data-i18n="scroll">Scroll ↓</div>
       <a class="xhs" href="https://www.xiaohongshu.com/search_result?keyword=%E8%A1%8C%E6%91%84%E7%9A%84%E9%80%A0%E7%89%A9%E7%AC%94%E8%AE%B0-%E9%98%BF%E9%A5%AD" target="_blank" rel="noopener">小红书 · 行摄的造物笔记-阿饭 ↗</a>
     </header>
   </div>
 
   <div class="wrap">
     <section class="statement">
-      <p>I do not paint the model — I <span>negotiate</span> with it. Every figure here is a small treaty between an intention and an algorithm.</p>
+      <p class="stmt-en">I do not paint the model — I <span>negotiate</span> with it. Every figure here is a small treaty between an intention and an algorithm.</p>
+      <p class="stmt-cn">我不去描绘模特——而是与她<span>协商</span>。这里的每一道身影，都是一次意图与算法之间的小小缔约。</p>
     </section>
   </div>
 
   <div class="wrap">
     <section class="reel-sec">
-      <div class="label" style="margin-bottom:22px">Selected · 精选</div>
+      <div class="label" style="margin-bottom:22px" data-i18n="selected">Selected · 精选</div>
       <div class="reel" id="reel">
         <div class="idx" id="reelIdx"></div>
         <button class="arrow l" id="reelPrev">&#8249;</button>
@@ -186,11 +197,12 @@
   <div class="bar">
     <div class="bar-inner">
       <div class="filters" id="filters">
-        <button class="active" data-filter="all">All</button>
-        <button data-filter="minion">Minions</button>
-        <button data-filter="sanguo">Three Kingdoms</button>
-        <button data-filter="pokemon">Pokémon</button>
-        <button data-filter="video">Motion</button>
+        <button class="active" data-filter="all" data-i18n="f_all">All</button>
+        <button data-filter="minion" data-i18n="f_minion">Minions</button>
+        <button data-filter="sanguo" data-i18n="f_sanguo">Three Kingdoms</button>
+        <button data-filter="pokemon" data-i18n="f_pokemon">Pokémon</button>
+        <button data-filter="character" data-i18n="f_character">Characters</button>
+        <button data-filter="video" data-i18n="f_video">Motion</button>
       </div>
       <select id="subSel"></select>
       <span class="count" id="count"></span>
@@ -199,14 +211,14 @@
 
   <div class="wrap">
     <div class="masonry" id="gallery"></div>
-    <div id="empty">Nothing here yet — try another filter.</div>
+    <div id="empty" data-i18n="empty">Nothing here yet — try another filter.</div>
     <div id="sentinel"></div>
   </div>
 
   <footer>
     <div class="fname">huittka</div>
     <a href="https://www.xiaohongshu.com/search_result?keyword=%E8%A1%8C%E6%91%84%E7%9A%84%E9%80%A0%E7%89%A9%E7%AC%94%E8%AE%B0-%E9%98%BF%E9%A5%AD" target="_blank" rel="noopener">小红书 · 行摄的造物笔记-阿饭（2452163370）</a>
-    <div class="fine">© 2026 huittka — An infinite gallery of synthetic dreams</div>
+    <div class="fine" data-i18n="fine">© 2026 huittka — An infinite gallery of synthetic dreams</div>
   </footer>
 
   <div class="lightbox" id="lightbox">
@@ -228,8 +240,22 @@
     const mTotal=document.getElementById('mTotal');
     if(mTotal) mTotal.textContent=(works?works.length:'0').toLocaleString();
 
-    const SUBMAP={minion:minionChars||[],sanguo:sanguoSubs||[],pokemon:pokemonSubs||[]};
-    const SUB_LABEL={minion:'Character',sanguo:'Character',pokemon:'Project'};
+    const SUBMAP={minion:minionChars||[],sanguo:sanguoSubs||[],pokemon:pokemonSubs||[],character:characterSubs||[]};
+
+    const I18N={
+      en:{title:'huittka — Synthetic Visions',kicker:'AI-Generated Visual Works · 2024—2026',
+          m_works:'Works',m_series:'Series',m_medium:'Medium',m_series_v:'Four',m_medium_v:'AI · Image / Motion',
+          scroll:'Scroll ↓',selected:'Selected · 精选',
+          f_all:'All',f_minion:'Minions',f_sanguo:'Three Kingdoms',f_pokemon:'Pokémon',f_character:'Characters',f_video:'Motion',
+          empty:'Nothing here yet — try another filter.',fine:'© 2026 huittka — An infinite gallery of synthetic dreams'},
+      zh:{title:'huittka — 合成视觉作品集',kicker:'AI 生成的视觉作品 · 2024—2026',
+          m_works:'作品',m_series:'系列',m_medium:'媒介',m_series_v:'四个',m_medium_v:'AI · 图像 / 动态',
+          scroll:'向下滚动 ↓',selected:'精选 · Selected',
+          f_all:'全部',f_minion:'小黄人',f_sanguo:'三国',f_pokemon:'宝可梦',f_character:'人物角色',f_video:'影像',
+          empty:'这里还没有内容 —— 换个筛选试试。',fine:'© 2026 huittka — 一座永无止境的合成梦境画廊'}
+    };
+    let lang=(function(){try{return localStorage.getItem('lang')||'en';}catch(e){return 'en';}})();
+    function subLabel(cat){return (lang==='zh')?(cat==='pokemon'?'项目':'角色'):(cat==='pokemon'?'Project':'Character');}
 
     const state={filter:'all',sub:'__all__',list:[],ptr:0,batch:60,currentList:[]};
 
@@ -238,7 +264,7 @@
     function fillSub(){
       const opts=SUBMAP[state.filter]||[];
       if(!opts.length){subSel.classList.remove('show');subSel.innerHTML='';return;}
-      let html='<option value="__all__">All '+SUB_LABEL[state.filter]+'s</option>';
+      let html='<option value="__all__">'+(lang==='zh'?'全部':'All ')+subLabel(state.filter)+(lang==='zh'?'':'s')+'</option>';
       opts.forEach(o=>{html+=`<option value="${esc(o.name)}">${esc(o.name)} (${o.count})</option>`;});
       subSel.innerHTML=html;subSel.value='__all__';subSel.classList.add('show');
     }
@@ -257,7 +283,7 @@
     function makeCard(w,index){
       const card=document.createElement('div');card.className='card';
       if(w.type==='video'){
-        const tag=document.createElement('span');tag.className='tag-video';tag.textContent='▶ Motion';card.appendChild(tag);
+        const tag=document.createElement('span');tag.className='tag-video';tag.textContent=(lang==='zh'?'▶ 影像':'▶ Motion');card.appendChild(tag);
         const v=document.createElement('video');v.src=w.src;v.muted=true;v.loop=true;v.playsInline=true;
         v.preload='metadata';v.style.aspectRatio=String(w.ar||1.777);card.appendChild(v);
         card.addEventListener('mouseenter',()=>v.play().catch(()=>{}));
@@ -286,7 +312,7 @@
     function reset(){
       gallery.innerHTML='';emptyEl.style.display='none';
       state.list=getList();state.ptr=0;
-      countEl.textContent=state.list.length.toLocaleString()+' works';
+      countEl.textContent=state.list.length.toLocaleString()+' '+(lang==='zh'?'件作品':'works');
       if(state.list.length===0){emptyEl.style.display='block';return;}
       renderBatch();
     }
@@ -368,6 +394,22 @@
     });
 
     reset();renderReel();startR();
+
+    function applyLang(l){
+      lang=l;
+      document.documentElement.lang=(l==='zh'?'zh-CN':'en');
+      document.body.className=(l==='zh'?'lang-zh':'lang-en');
+      document.title=I18N[l].title;
+      document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[l][k]!=null)el.textContent=I18N[l][k];});
+      document.querySelectorAll('.tag-video').forEach(el=>el.textContent=(lang==='zh'?'▶ 影像':'▶ Motion'));
+      fillSub();
+      if(state.list&&state.list.length)countEl.textContent=state.list.length.toLocaleString()+' '+(l==='zh'?'件作品':'works');
+      const lb=document.getElementById('langToggle');if(lb)lb.textContent=(l==='zh'?'EN':'中文');
+      try{localStorage.setItem('lang',l);}catch(e){}
+    }
+    const langBtn=document.getElementById('langToggle');
+    if(langBtn)langBtn.addEventListener('click',()=>applyLang(lang==='zh'?'en':'zh'));
+    applyLang(lang);
   })();
   </script>
 </body>
