@@ -205,6 +205,8 @@
         <button data-filter="sanguo" data-i18n="f_sanguo">Three Kingdoms</button>
         <button data-filter="pokemon" data-i18n="f_pokemon">Pokémon</button>
         <button data-filter="character" data-i18n="f_character">Characters</button>
+        <button data-filter="gundam" data-i18n="f_gundam">Gundam</button>
+        <button data-filter="zzz" data-i18n="f_zzz">Zenless</button>
         <button data-filter="video" data-i18n="f_video">Motion</button>
       </div>
       <select id="subSel"></select>
@@ -243,22 +245,26 @@
     const mTotal=document.getElementById('mTotal');
     if(mTotal) mTotal.textContent=(works?works.length:'0').toLocaleString();
 
-    const SUBMAP={minion:minionChars||[],sanguo:sanguoSubs||[],pokemon:pokemonSubs||[],character:characterSubs||[]};
+    const SUBMAP={minion:minionChars||[],sanguo:sanguoSubs||[],pokemon:pokemonSubs||[],character:characterSubs||[],gundam:gundamSubs||[],zzz:zzzSubs||[]};
 
     const I18N={
       en:{title:'huittka — Synthetic Visions',kicker:'AI-Generated Visual Works · 2024—2026',
-          m_works:'Works',m_series:'Series',m_medium:'Medium',m_series_v:'Four',m_medium_v:'AI · Image / Motion',
+          m_works:'Works',m_series:'Series',m_medium:'Medium',m_series_v:'Six',m_medium_v:'AI · Image / Motion',
           scroll:'Scroll ↓',selected:'Selected · 精选',
-          f_all:'All',f_minion:'Minions',f_sanguo:'Three Kingdoms',f_pokemon:'Pokémon',f_character:'Characters',f_video:'Motion',
+          f_all:'All',f_minion:'Minions',f_sanguo:'Three Kingdoms',f_pokemon:'Pokémon',f_character:'Characters',f_gundam:'Gundam',f_zzz:'Zenless',f_video:'Motion',
           empty:'Nothing here yet — try another filter.',fine:'© 2026 huittka — An infinite gallery of synthetic dreams'},
       zh:{title:'huittka — 合成视觉作品集',kicker:'AI 生成的视觉作品 · 2024—2026',
-          m_works:'作品',m_series:'系列',m_medium:'媒介',m_series_v:'四个',m_medium_v:'AI · 图像 / 动态',
+          m_works:'作品',m_series:'系列',m_medium:'媒介',m_series_v:'六个',m_medium_v:'AI · 图像 / 动态',
           scroll:'向下滚动 ↓',selected:'精选 · Selected',
-          f_all:'全部',f_minion:'小黄人',f_sanguo:'三国',f_pokemon:'宝可梦',f_character:'人物角色',f_video:'影像',
+          f_all:'全部',f_minion:'小黄人',f_sanguo:'三国',f_pokemon:'宝可梦',f_character:'人物角色',f_gundam:'敢达',f_zzz:'二创绝区零',f_video:'影像',
           empty:'这里还没有内容 —— 换个筛选试试。',fine:'© 2026 huittka — 一座永无止境的合成梦境画廊'}
     };
     let lang=(function(){try{return localStorage.getItem('lang')||'en';}catch(e){return 'en';}})();
-    function subLabel(cat){return (lang==='zh')?(cat==='pokemon'?'项目':'角色'):(cat==='pokemon'?'Project':'Character');}
+    function subLabel(cat){
+      if(cat==='gundam') return (lang==='zh')?'机体':'Unit';
+      if(cat==='zzz') return (lang==='zh')?'角色':'Character';
+      return (lang==='zh')?(cat==='pokemon'?'项目':'角色'):(cat==='pokemon'?'Project':'Character');
+    }
 
     const state={filter:'all',sub:'__all__',list:[],ptr:0,batch:60,currentList:[]};
 
