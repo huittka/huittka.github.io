@@ -246,7 +246,7 @@
     const mTotal=document.getElementById('mTotal');
     if(mTotal) mTotal.textContent=(works?works.length:'0').toLocaleString();
 
-    const SUBMAP={minion:minionChars||[],sanguo:sanguoSubs||[],pokemon:pokemonSubs||[],character:characterSubs||[],gundam:gundamSubs||[],zzz:zzzSubs||[]};
+    const SUBMAP={minion:window.minionChars||[],sanguo:window.sanguoSubs||[],pokemon:window.pokemonSubs||[],character:window.characterSubs||[],gundam:window.gundamSubs||[],zzz:window.zzzSubs||[]};
 
     const I18N={
       en:{title:'huittka — Synthetic Visions',kicker:'AI-Generated Visual Works · 2024—2026',
@@ -355,7 +355,7 @@
       reelDesc=document.getElementById('reelDesc'),reelDots=document.getElementById('reelDots'),
       reelIdx=document.getElementById('reelIdx');
     function renderReel(){
-      if(!featured||!featured.length){document.querySelector('.reel-sec').style.display='none';return;}
+      if(!window.featured||!window.featured.length){document.querySelector('.reel-sec').style.display='none';return;}
       reelDots.innerHTML=featured.map((_,i)=>`<b data-i="${i}"></b>`).join('');
       reelDots.querySelectorAll('b').forEach(b=>b.addEventListener('click',()=>showR(+b.dataset.i)));
       document.getElementById('reelPrev').onclick=()=>showR(fIdx-1);
@@ -412,7 +412,7 @@
       if(e.key==='ArrowRight')nav(1);
     });
 
-    reset();renderReel();startR();
+    reset();renderReel();if(window.featured&&window.featured.length)startR();
 
     function applyLang(l){
       lang=l;
